@@ -2,7 +2,7 @@ import pygame
 
 class Cell:
     selectedcellpos = None
-
+    cell_size = 60
 
     def __init__(self, value, row, col, screen):
         self.value = value
@@ -11,8 +11,10 @@ class Cell:
         self.row = row
         self.col = col
         self.screen = screen
-        self.cell_size = 60
+
         self.editable = False
+        self.sketched_value = None
+
 
 
         #Constructor for the Cell class
@@ -35,41 +37,50 @@ class Cell:
 
 
 
-
         #Define size of cell
         #Calculate coordinates of top left corner of cell
-        x = self.col * self.cell_size
-        y = self.row * self.cell_size
+        self.x = self.col * self.cell_size
+        self.y = self.row * self.cell_size
         #Draw background rectangle
         if self.value == "":
             self.editable = True
 
         if self.editable:
-            border = (97, 231, 255)
+             background = (184, 249, 252)
         else:
-            border = (0, 0, 0) #Border color
-        cell_rect = pygame.Rect(x, y, self.cell_size, self.cell_size)  # Rectangle in the cell
+             border = (0, 0, 0) #Border color
+        cell_rect = pygame.Rect(self.x, self.y, self.cell_size, self.cell_size)  # Rectangle in the cell
 
-        #Selecting cell mechanism
-        if Cell.selectedcellpos:
-            if self.row == Cell.selectedcellpos[0] and self.col == Cell.selectedcellpos[1]:
-                border = (252, 16, 0)
+
+
+
 
 
 
         #Drawing the numbers
-        font = pygame.font.SysFont(None, 30)
-        number_text = font.render(str(self.value), True, (0,0,0))
+
+
+
+        if self.editable:
+            pygame.draw.rect(self.screen, background, (self.x, self.y, self.cell_size, self.cell_size))
+
+        if self.sketched_value != None and self.editable:
+            font = pygame.font.SysFont(None, 35)
+            text = font.render(str(self.sketched_value), True, (128, 128, 128))
+            self.screen.blit(text, (self.x + 5, self.y + 5))
+
+
+
+
+
+
+
+
+        #draws number
+        font = pygame.font.SysFont(None, 40)
+        number_text = font.render(str(self.value), True, (0, 0, 0))
         text_rect = number_text.get_rect(center=cell_rect.center)
-
-        pygame.draw.rect(self.screen, border, cell_rect, 3)
         self.screen.blit(number_text, text_rect)
-
-
-
-
-        pass
-
 
         # Draws this cell, along with the value inside it.
         # If this cell has a nonzero value, that value is displayed.
